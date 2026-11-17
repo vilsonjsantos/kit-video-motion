@@ -8,11 +8,14 @@ funcionando só com legenda.
 O pacote é grande demais para o git (Python portátil com PyTorch, ~1 GB, e o modelo, ~3,2 GB). Ele fica na página de
 **Releases** do repositório (versão `voz-v1`).
 
-- **Automático:** dois cliques em `ferramentas\baixar-voz.bat`. Baixa tudo, extrai e testa. Pode rodar de novo: só baixa o que falta.
-- **À mão** (se a rede bloquear o script): na página do repositório no GitHub → **Releases** → `voz-v1`, baixe:
-  - os 6 arquivos do modelo (`t3_mtl23ls_v2.safetensors`, `s3gen.pt`, `ve.pt`, `conds.pt`, `grapheme_mtl_merged_expanded_v1.json`,
-    `Cangjie5_TC.json`) para a pasta `modelo\` do kit;
-  - `voz-python-windows.zip` e extraia **na pasta do kit** (ele cria `runtime\python\`).
+- **Automático:** dois cliques em `ferramentas\baixar-voz.bat`. Os arquivos grandes vêm em **pedaços de 45 MB**
+  (`*.parteNNN.bin`, porque redes de empresa costumam bloquear downloads grandes); o script baixa os pedaços para `partes\`,
+  junta, confere a assinatura SHA-256, extrai e testa. Pode rodar de novo: só baixa o que falta.
+- **Se a rede bloquear o script:** ele termina listando o que faltou. Baixe esses arquivos pelo **navegador** na página do
+  release `voz-v1`, ponha os `*.parteNNN.bin` na pasta `partes\` do kit (e os arquivos pequenos `ve.pt`, `conds.pt`,
+  `grapheme_mtl_merged_expanded_v1.json`, `Cangjie5_TC.json` em `modelo\`) e rode o `baixar-voz.bat` de novo: ele só junta.
+- (Os arquivos inteiros, sem pedaços, também estão no release para quem não tem bloqueio: os 6 do modelo vão em `modelo\` e o
+  `voz-python-windows.zip` é extraído na pasta do kit.)
 - Confira com `npm run diagnostico` → "voz local (narração): pronta".
 
 ## Usar

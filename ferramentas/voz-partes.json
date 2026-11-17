@@ -1,0 +1,346 @@
+[
+ {
+  "arquivo": "t3_mtl23ls_v2.safetensors",
+  "pasta": "modelo",
+  "tamanho": 2143989752,
+  "sha256": "B1237586127CE98E7800A68E49938EB5092846862AABCB6E17B2FDA7889A6C75",
+  "partes": [
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte001.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte002.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte003.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte004.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte005.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte006.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte007.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte008.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte009.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte010.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte011.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte012.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte013.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte014.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte015.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte016.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte017.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte018.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte019.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte020.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte021.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte022.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte023.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte024.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte025.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte026.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte027.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte028.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte029.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte030.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte031.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte032.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte033.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte034.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte035.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte036.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte037.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte038.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte039.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte040.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte041.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte042.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte043.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte044.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte045.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "t3_mtl23ls_v2.safetensors.parte046.bin",
+    "tamanho": 20623352
+   }
+  ]
+ },
+ {
+  "arquivo": "s3gen.pt",
+  "pasta": "modelo",
+  "tamanho": 1057165844,
+  "sha256": "9B9FF07E60B20C136E2B1B3D7563A24604E8D2C4C267888D1EE929DD0151D2A3",
+  "partes": [
+   {
+    "nome": "s3gen.pt.parte001.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte002.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte003.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte004.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte005.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte006.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte007.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte008.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte009.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte010.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte011.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte012.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte013.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte014.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte015.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte016.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte017.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte018.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte019.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte020.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte021.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte022.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "s3gen.pt.parte023.bin",
+    "tamanho": 19075604
+   }
+  ]
+ },
+ {
+  "arquivo": "voz-python-windows.zip",
+  "pasta": "runtime",
+  "tamanho": 476181376,
+  "sha256": "FD3DF1DC79E9C8646AFAD682E4848CE268D74E292B11926F603E9D8E0BC72E9E",
+  "partes": [
+   {
+    "nome": "voz-python-windows.zip.parte001.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "voz-python-windows.zip.parte002.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "voz-python-windows.zip.parte003.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "voz-python-windows.zip.parte004.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "voz-python-windows.zip.parte005.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "voz-python-windows.zip.parte006.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "voz-python-windows.zip.parte007.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "voz-python-windows.zip.parte008.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "voz-python-windows.zip.parte009.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "voz-python-windows.zip.parte010.bin",
+    "tamanho": 47185920
+   },
+   {
+    "nome": "voz-python-windows.zip.parte011.bin",
+    "tamanho": 4322176
+   }
+  ]
+ }
+]
