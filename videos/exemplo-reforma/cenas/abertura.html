@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="/motor/pagina/kit.css">
+<script src="/motor/pagina/kit.js"></script>
+<style>
+  #ano { left: 1150px; top: 230px; width: 600px; height: 520px; border-radius: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 40px 90px rgba(0, 20, 80, 0.35); }
+  #num { font-size: 210px; font-weight: 900; letter-spacing: -0.05em; line-height: 1; color: var(--escura); }
+  .bola { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.12); }
+</style>
+</head><body>
+<div class="fundo primaria"></div>
+<div class="palco" id="cam">
+  <div class="bola" id="b1" style="left:-160px; top:640px; width:620px; height:620px"></div>
+  <div class="bola" id="b2" style="left:1580px; top:-120px; width:420px; height:420px"></div>
+  <div class="bola" id="b3" style="left:1000px; top:740px; width:90px; height:90px; background: var(--destaque)"></div>
+  <div class="pilula" id="tag" style="left:120px; top:170px; font-size:30px; color:var(--primaria)"><span class="ponto"></span>Treinamento</div>
+  <div class="titulo-g claro abs" id="tit" style="left:120px; top:300px">A reforma<br>*tributária*</div>
+  <div class="cartao" id="ano">
+    <div class="rotulo em-primaria" style="letter-spacing:0.14em; font-size:44px">JANEIRO</div>
+    <div id="num">2027</div>
+    <div class="texto em-secundaria" style="font-weight:700">começa a CBS</div>
+  </div>
+</div>
+<script>
+  // câmera aproximando devagar durante a cena inteira (nunca fica parado)
+  camera('#cam', { para: { s: 1.05, x: -20 } })
+  flutuar('#b1', { amp: 14, periodo: 5 }); flutuar('#b2', { amp: 10, periodo: 4, fase: 1 }); flutuar('#b3', { amp: 18, periodo: 3, fase: 2 })
+  aparecer('#b3', 1.6, { tipo: 'mola' })
+
+  aparecer('#tag', 0.15, { tipo: 'desce', distancia: 30 }); som('pop', 0.15, { vol: 0.6 })
+  palavras('#tit', 0.35, { passo: 0.14 }); som('whoosh-curto', 0.35, { vol: 0.5 })
+
+  // o cartão do ano entra girando com mola, o número conta até 2027 e respira
+  aparecer('#ano', 1.0, { tipo: 'gira' }); som('pop-grave', 1.0)
+  contar('#num', { de: 2019, ate: 2027, ini: 1.1, dur: 1.1, milhar: false, som: true })
+  som('plim', 2.2)
+  pulsar('#ano', { ini: 2.3, amp: 0.012 })
+</script>
+</body></html>

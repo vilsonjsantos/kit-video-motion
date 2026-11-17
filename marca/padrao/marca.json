@@ -1,0 +1,17 @@
+{
+  "nome": "Marca de exemplo",
+  "cores": {
+    "primaria": "#1E6BFF",
+    "secundaria": "#4C8DFF",
+    "escura": "#0B1F4D",
+    "clara": "#DCE6FF",
+    "fundo": "#F3F6FF",
+    "destaque": "#FFC93C",
+    "sucesso": "#2BB673",
+    "perigo": "#F0506E",
+    "texto": "#0B1F4D",
+    "branco": "#FFFFFF"
+  },
+  "logo": { "sobreClaro": "logo-cor.svg", "sobreEscuro": "logo-branco.svg", "altura": 56 },
+  "legenda": { "fundo": "#FFFFFF", "texto": "#0B1F4D", "destaque": "#1E6BFF" }
+}

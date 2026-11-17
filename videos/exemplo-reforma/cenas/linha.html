@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="/motor/pagina/kit.css">
+<script src="/motor/pagina/kit.js"></script>
+<style>
+  .marco { position: absolute; width: 380px; padding: 30px 34px; transform: translate(-50%, 0); }
+  .marco .ano { font-size: 60px; font-weight: 900; letter-spacing: -0.03em; color: var(--primaria); line-height: 1; }
+  .marco .o-que { font-size: 32px; font-weight: 700; color: var(--escura); margin-top: 10px; line-height: 1.2; }
+  .ponto-linha { position: absolute; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: var(--branco); border: 9px solid var(--primaria); }
+  #cursor { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: var(--destaque); box-shadow: 0 0 0 10px rgba(255, 201, 60, 0.3); }
+</style>
+</head><body>
+<div class="fundo"></div>
+<div class="palco" id="cam">
+  <div class="titulo abs" id="tit" style="left:120px; top:100px; color:var(--escura)">E *quando*?</div>
+  <svg class="palco"><line id="trilho" x1="200" y1="560" x2="1720" y2="560" stroke="var(--clara)" stroke-width="14" stroke-linecap="round"/></svg>
+  <div id="marcos"></div>
+  <div id="cursor"></div>
+</div>
+<script>
+  const d1 = fala('d1'), d2 = fala('d2'), d3 = fala('d3')
+  camera('#cam', { para: { s: 1.03, x: -15 } })
+  palavras('#tit', 0.75, { passo: 0.12 })
+  tracar('#trilho', 0.8, 1.0, 'vai'); som('deslizar', 0.8)
+
+  // cada marco: um ponto na linha + um cartão (em cima ou embaixo, alternando) que entra no tempo da fala
+  const MARCOS = [
+    { x: 330, ano: '2026', txt: 'ano de teste', t: d1.ini + 0.2, cima: true },
+    { x: 760, ano: '2027', txt: 'a CBS começa', t: d2.ini + 0.2, cima: false },
+    { x: 1190, ano: '2029–2032', txt: 'o IBS entra aos poucos', t: d3.ini + 0.2, cima: true },
+    { x: 1600, ano: '2033', txt: 'fim da transição', t: d3.ini + d3.dur * 0.62, cima: false },
+  ]
+  MARCOS.forEach((m, i) => {
+    const p = criar('div', { class: 'ponto-linha', style: `left:${m.x}px; top:560px` }, '#marcos')
+    const c = criar('div', { class: 'cartao marco', style: `left:${m.x}px; top:${m.cima ? 230 : 610}px`, html: `<div class="ano">${m.ano}</div><div class="o-que">${m.txt}</div>` }, '#marcos')
+    aparecer(p, m.t, { tipo: 'mola' })
+    aparecer(c, m.t + 0.12, { tipo: m.cima ? 'desce' : 'sobe', distancia: 40 })
+    som('pop', m.t, { vol: 0.7 })
+    flutuar(c, { amp: 5, periodo: 3.2 + i * 0.3, fase: i })
+  })
+  som('plim', MARCOS[3].t + 0.15, { vol: 0.6 })
+
+  // o cursor amarelo viaja pela linha até o marco da vez
+  quadro((t) => {
+    let x = 200
+    for (const m of MARCOS) x = lerp(x, m.x, prog(t, m.t - 0.45, 0.45, 'vai'))
+    css('#cursor', { left: x + 'px', top: '560px', opacity: prog(t, d1.ini - 0.2, 0.3) })
+  })
+</script>
+</body></html>

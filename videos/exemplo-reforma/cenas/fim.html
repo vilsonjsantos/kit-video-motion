@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="/motor/pagina/kit.css">
+<script src="/motor/pagina/kit.js"></script>
+<script src="/motor/pagina/pessoa.js"></script>
+<style>
+  .item { position: absolute; left: 120px; display: flex; align-items: center; gap: 28px; font-size: 46px; font-weight: 700; color: var(--escura); }
+  .item .num { width: 76px; height: 76px; border-radius: 24px; background: var(--primaria); color: #fff; font-size: 40px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex: none; }
+</style>
+</head><body>
+<div class="fundo clara"></div>
+<svg class="palco"><circle id="bolha" cx="1500" cy="640" r="380" fill="var(--branco)" opacity="0.55"/></svg>
+<div class="titulo abs" id="tit" style="left:120px; top:100px; color:var(--escura)">O que fazer *agora*</div>
+<div id="lista"></div>
+<svg class="palco" id="palco"></svg>
+<script>
+  const f1 = fala('f1'), f2 = fala('f2')
+  palavras('#tit', 0.3, { passo: 0.1 })
+  flutuar('#bolha', { amp: 10, periodo: 5 })
+
+  // a lista entra no ritmo da fala f1; cada número vira um "certo" depois
+  const ITENS = ['Fale com o seu contador', 'Emita a nota fiscal', 'Acompanhe as regras']
+  ITENS.forEach((txt, i) => {
+    const it = criar('div', { class: 'item', style: `top:${300 + i * 130}px`, html: `<div class="num"><span class="n">${i + 1}</span></div><span>${txt}</span>` }, '#lista')
+    const t0 = f1.ini + 1.4 + i * (f1.dur - 1.6) / 3
+    aparecer(it, t0, { tipo: 'esquerda', distancia: 80 }); som('pop', t0, { vol: 0.6 })
+    const num = it.querySelector('.num'), n = it.querySelector('.n')
+    const ok = f2.ini + i * 0.25
+    som('click', ok, { vol: 0.7 })
+    quadro((t) => {
+      const p = prog(t, ok, 0.25)
+      num.style.background = p > 0.5 ? 'var(--sucesso)' : 'var(--primaria)'
+      n.innerHTML = p > 0.5 ? '<svg width="40" height="40" viewBox="0 0 26 26"><path d="M5 13.5 L11 19 L21 7" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>' : String(i + 1)
+      num.style.transform = `scale(${1 + 0.18 * Math.sin(Math.PI * p)})`
+    })
+  })
+  som('sucesso', f2.ini + 0.9)
+
+  // os dois personagens à direita
+  const ana = pessoa('#palco', { preset: 'apresentadora', quem: 'apresentadora', x: 1360, y: 1130, s: 1.45, flip: true })
+  const rafa = pessoa('#palco', { preset: 'colega', quem: 'colega', x: 1700, y: 1130, s: 1.45 })
+  quadro((t) => {
+    ana.pose({ ...POSES.explica, inc: -4 + 3 * Math.sin(t * 1.5), olhar: [-6, 0] })
+    const feliz = prog(t, f2.ini + 0.8, 0.5)
+    rafa.pose({ ...(feliz > 0.5 ? POSES.comemora : POSES.sorri), e: lerpV([14, 10], POSES.comemora.e, feliz), d: lerpV([14, 10], POSES.comemora.d, feliz), inc: 4 * Math.sin(t * 1.3) })
+  })
+</script>
+</body></html>

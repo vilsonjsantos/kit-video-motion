@@ -1,0 +1,41 @@
+{
+  "titulo": "A reforma tributária em 1 minuto (exemplo do kit)",
+  "marca": "padrao",
+  "personagens": {
+    "apresentadora": { "nome": "Ana", "cor": "#1E6BFF" },
+    "colega": { "nome": "Rafa", "cor": "#D99A00" }
+  },
+  "som": { "musica": "trilha-otimista", "volumeMusica": 0.3 },
+  "cenas": [
+    { "id": "abertura", "fundo": "escuro",
+      "falas": [
+        { "id": "a1", "texto": "Em *2027*, os impostos sobre serviços começam a mudar." }
+      ], "extra": 0.6 },
+    { "id": "duvida", "transicao": "folha",
+      "falas": [
+        { "id": "b1", "quem": "colega", "texto": "CBS, IBS, nota fiscal, crédito... por onde eu começo?" },
+        { "id": "b2", "quem": "apresentadora", "texto": "Calma! Vamos por partes." }
+      ], "extra": 1.6 },
+    { "id": "impostos", "transicao": "circulo", "origem": [960, 540], "fundo": "escuro",
+      "falas": [
+        { "id": "c1", "texto": "Primeiro: *quatro* impostos viram *dois*." },
+        { "id": "c2", "texto": "A *CBS* substitui PIS e Cofins. O *IBS* substitui ICMS e ISS." }
+      ], "extra": 0.8 },
+    { "id": "linha", "transicao": "deslizar",
+      "falas": [
+        { "id": "d1", "texto": "*2026* é o ano de teste." },
+        { "id": "d2", "texto": "Em *2027*, a CBS começa de verdade." },
+        { "id": "d3", "texto": "De 2029 a 2032 o IBS entra aos poucos, e em *2033* a transição termina." }
+      ], "extra": 0.6 },
+    { "id": "numeros", "transicao": "folha", "fundo": "escuro",
+      "falas": [
+        { "id": "e1", "texto": "Nos serviços financeiros, CBS e IBS somados começam perto de *11%*." },
+        { "id": "e2", "texto": "E chegam a *12,5%* em 2033. Confirme o seu caso com o contador." }
+      ], "extra": 0.8 },
+    { "id": "fim", "transicao": "zoom",
+      "falas": [
+        { "id": "f1", "quem": "apresentadora", "texto": "O que fazer agora? Fale com o contador, emita a nota e acompanhe as regras." },
+        { "id": "f2", "quem": "colega", "texto": "Por partes, faz sentido!" }
+      ], "extra": 1.4 }
+  ]
+}

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="/motor/pagina/kit.css">
+<script src="/motor/pagina/kit.js"></script>
+<script src="/motor/pagina/pessoa.js"></script>
+<style>
+  .chip { font-size: 40px; padding: 18px 34px; }
+  .chip .ponto { display: inline-flex; align-items: center; justify-content: center; }
+  .interroga { position: absolute; width: 110px; height: 110px; margin: -55px 0 0 -55px; border-radius: 50%; background: var(--secundaria); color: #fff; font-size: 76px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: var(--sombra); }
+</style>
+</head><body>
+<div class="fundo"></div>
+<svg class="palco" id="deco">
+  <circle cx="560" cy="640" r="430" fill="var(--clara)" opacity="0.7"/>
+  <circle cx="1250" cy="700" r="380" fill="var(--clara)" opacity="0.45"/>
+  <circle id="sol" cx="1230" cy="140" r="46" fill="var(--destaque)"/>
+</svg>
+<svg class="palco" id="palco"></svg>
+<div id="perguntas"></div>
+<div id="chips"></div>
+<script>
+  const b1 = fala('b1'), b2 = fala('b2')
+  const T = b2.ini - 1.1        // a apresentadora entra um pouco antes de falar
+  const ORDENA = b2.ini + 0.6   // a bagunça vira lista enquanto ela fala
+
+  // ── os dois personagens (piscam, respiram e mexem a boca sozinhos quando é a fala deles) ──
+  const rafa = pessoa('#palco', { preset: 'colega', quem: 'colega', x: 560, y: 1160, s: 1.75 })
+  const ana = pessoa('#palco', { preset: 'apresentadora', quem: 'apresentadora', x: 2300, y: 1160, s: 1.75 })
+  som('whoosh-curto', T, { vol: 0.6 })
+  quadro((t) => {
+    const sobe = mola(t, 0.15, { amortecimento: 16, rigidez: 90 })
+    const entende = prog(t, ORDENA + 0.2, 0.8)
+    const feliz = prog(t, ORDENA + 1.0, 0.5)
+    rafa.mover(560, lerp(1700, 1160, sobe))
+    rafa.pose({
+      inc: (1 - entende) * 8 * Math.sin(t * 1.8) - feliz * 4,
+      e: lerpV(lerpV([14, 10], POSES.duvida.e, prog(t, b1.ini + 0.3, 0.5)), [14, 10], entende),
+      d: lerpV(lerpV([14, 10], POSES.duvida.d, prog(t, b1.ini + 0.3, 0.5)), POSES.joia.d, feliz),
+      olhar: lerpV([5 * Math.sin(t * 1.4), -2], [6, 0], entende),
+      olhos: entende > 0.2 && feliz < 0.5 ? 'surpresa' : 'abertos',
+      boca: feliz > 0.4 ? 'sorriso' : entende > 0.2 ? 'o' : 'ondulada',
+      sob: lerpV([-10, -8, 12, 5], [0, -6, 0, -6], entende),
+    })
+    ana.mover(lerp(2300, 1250, mola(t, T, { amortecimento: 15, rigidez: 80 })), 1160)
+    ana.pose({ ...POSES.explica, inc: -5 + 3 * Math.sin(t * 1.6), d: lerpV([16, 10], [76 + 4 * Math.sin(t * 3), -6], prog(t, T + 1.2, 0.6)), olhar: [-5, 0] })
+  })
+
+  // ── a bagunça: rótulos girando em volta do Rafa, que viram uma lista organizada ──
+  const NOMES = ['CBS', 'IBS', 'Nota fiscal', 'Crédito do cliente']
+  NOMES.forEach((nome, i) => {
+    const c = criar('div', { class: 'pilula chip', html: `<span class="ponto"></span>${nome}` }, '#chips')
+    const nasce = b1.ini + 0.15 + i * 0.32
+    som('pop', nasce, { vol: 0.7 })
+    quadro((t) => {
+      const ang = i * (Math.PI / 2) + t * 0.55
+      const ox = 560 + Math.cos(ang) * 400, oy = 560 + Math.sin(ang) * 235
+      const m = prog(t, ORDENA, 0.9, 'vai')
+      const x = lerp(ox, 1660, m), y = lerp(oy, 260 + i * 120, m)
+      const s = Math.max(0, mola(t, nasce, { amortecimento: 12, rigidez: 150 }))
+      c.style.left = x + 'px'; c.style.top = y + 'px'
+      c.style.transform = `translate(-50%, -50%) rotate(${lerp(9 * Math.sin(ang * 2 + i), 0, m)}deg) scale(${s})`
+      const ok = m > 0.95
+      const p = c.querySelector('.ponto')
+      p.style.background = ok ? 'var(--sucesso)' : 'var(--clara)'
+      p.innerHTML = ok ? '<svg width="22" height="22" viewBox="0 0 26 26"><path d="M5 13.5 L11 19 L21 7" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>' : ''
+    })
+    som('tic', ORDENA + 0.9 + i * 0.12, { vol: 0.6 })
+  })
+  som('deslizar', ORDENA, { vol: 0.8 })
+
+  // ── pontos de interrogação em volta da cabeça (somem quando ele entende) ──
+  ;[[380, 400], [760, 380], [575, 250]].forEach(([x, y], i) => {
+    const q = criar('div', { class: 'interroga', texto: '?', 'data-conferir': 'nao' }, '#perguntas')
+    const nasce = b1.ini + 0.1 + i * 0.3
+    som('pop-grave', nasce, { vol: 0.4 })
+    quadro((t) => {
+      const s = Math.max(0, mola(t, nasce, { amortecimento: 9, rigidez: 160 })) * (1 - prog(t, ORDENA - 0.1 + i * 0.1, 0.3))
+      q.style.left = x + 'px'; q.style.top = y + 10 * Math.sin(t * 2.5 + i * 2) + 'px'
+      q.style.transform = `scale(${s}) rotate(${(i - 1) * 12}deg)`
+    })
+  })
+
+  // ── a lâmpada: ele entendeu ──
+  const lamp = criar('g', { id: 'lamp' }, '#palco')
+  lamp.innerHTML = `<circle r="46" fill="var(--destaque)"/><rect x="-18" y="40" width="36" height="22" rx="7" fill="var(--escura)"/>` +
+    Array.from({ length: 10 }, (_, k) => `<rect x="-3" y="-92" width="6" height="22" rx="3" fill="var(--destaque)" transform="rotate(${k * 36})"/>`).join('')
+  som('sucesso', ORDENA + 1.0)
+  quadro((t) => lamp.setAttribute('transform', `translate(800 270) scale(${Math.max(0, mola(t, ORDENA + 1.0, { amortecimento: 8, rigidez: 140 }))})`))
+  flutuar('#sol', { amp: 8, periodo: 4 })
+</script>
+</body></html>

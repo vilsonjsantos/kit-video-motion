@@ -1,0 +1,27 @@
+{
+  "name": "kit-video-motion",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vídeos explicativos em motion graphics (HTML/CSS/SVG → MP4) com legenda, efeitos sonoros e trilha gerados por código. Feito para ser operado por um modelo de IA em várias passadas.",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "novo": "node motor/kit.mjs novo",
+    "ver": "node motor/kit.mjs ver",
+    "quadros": "node motor/kit.mjs quadros",
+    "folha": "node motor/kit.mjs folha",
+    "conferir": "node motor/kit.mjs conferir",
+    "som": "node motor/kit.mjs som",
+    "render": "node motor/kit.mjs render",
+    "gerar-sons": "node ferramentas/gerar-sons.mjs",
+    "gerar-musica": "node ferramentas/gerar-musica.mjs",
+    "diagnostico": "node motor/kit.mjs diagnostico"
+  },
+  "dependencies": {
+    "playwright-core": "^1.48.0"
+  },
+  "optionalDependencies": {
+    "ffmpeg-static": "^5.2.0"
+  }
+}

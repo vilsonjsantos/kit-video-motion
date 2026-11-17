@@ -1,0 +1,67 @@
+<!doctype html>
+<!-- ver.html — PRÉVIA no navegador (para pessoas): toca o vídeo em tempo real, com barra de tempo, lista de cenas e o som
+     (_saida/som.wav, se já existir: rode "npm run som -- videos/<nome>" antes). Aberto por: npm run ver -- videos/<nome> -->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Prévia</title>
+<style>
+  body { margin: 0; background: #111; color: #eee; font: 15px/1.4 'Segoe UI', Arial, sans-serif; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 16px; }
+  #tela { width: 1280px; height: 720px; position: relative; overflow: hidden; background: #000; border-radius: 8px; }
+  #tela iframe { width: 1920px; height: 1080px; border: 0; transform: scale(0.6667); transform-origin: 0 0; }
+  #barra { width: 1280px; display: flex; gap: 10px; align-items: center; }
+  #barra input[type=range] { flex: 1; }
+  button { background: #2b6bff; color: #fff; border: 0; border-radius: 6px; padding: 6px 14px; font-weight: 700; cursor: pointer; }
+  #cenas { width: 1280px; display: flex; flex-wrap: wrap; gap: 6px; }
+  #cenas span { background: #222; padding: 4px 10px; border-radius: 999px; cursor: pointer; }
+  #cenas span.atual { background: #2b6bff; }
+  #info { color: #aaa; }
+</style>
+</head>
+<body>
+<div id="tela"><iframe id="v"></iframe></div>
+<div id="barra"><button id="play">▶</button><input id="pos" type="range" min="0" max="1000" value="0"><span id="tempo">0.0 s</span></div>
+<div id="cenas"></div>
+<div id="info">Espaço: tocar/pausar · ← →: 1 s · a prévia pode engasgar em cenas pesadas; o render final não.</div>
+<audio id="som"></audio>
+<script>
+const q = new URLSearchParams(location.search)
+const pasta = q.get('video')
+const fr = document.getElementById('v'), som = document.getElementById('som')
+fr.src = '/motor/pagina/video.html?video=' + encodeURIComponent(pasta)
+let T = 0, tocando = false, total = 10, inicio = 0, linha = null
+const $ = (id) => document.getElementById(id)
+function desenhar() {
+  const w = fr.contentWindow
+  if (w && w.__quadro) w.__quadro(T)
+  $('pos').value = String(Math.round((T / total) * 1000))
+  $('tempo').textContent = T.toFixed(1) + ' / ' + total.toFixed(1) + ' s'
+  if (linha) for (const [i, s] of [...$('cenas').children].entries()) s.className = T >= linha.cenas[i].ini && T < linha.cenas[i].fim ? 'atual' : ''
+}
+function laco() {
+  if (tocando) { T = (performance.now() - inicio) / 1000; if (T >= total) { T = total; tocando = false; som.pause(); $('play').textContent = '▶' } desenhar() }
+  requestAnimationFrame(laco)
+}
+function tocar(on) {
+  tocando = on
+  $('play').textContent = on ? '❚❚' : '▶'
+  if (on) { if (T >= total) T = 0; inicio = performance.now() - T * 1000; if (som.src) { som.currentTime = T; som.play().catch(() => {}) } } else som.pause()
+}
+function ir(t) { T = Math.max(0, Math.min(total, t)); if (tocando) tocar(true); desenhar() }
+fr.onload = async () => {
+  const w = fr.contentWindow
+  while (!w.__carregado) await new Promise((r) => setTimeout(r, 50))
+  await w.__pronto()
+  linha = w.__linha; total = linha.total
+  for (const c of linha.cenas) { const s = document.createElement('span'); s.textContent = c.id; s.onclick = () => ir(c.ini + c.lead); $('cenas').appendChild(s) }
+  const r = await fetch('/' + pasta + '/_saida/som.wav', { method: 'HEAD' }).catch(() => null)
+  if (r && r.ok) som.src = '/' + pasta + '/_saida/som.wav'
+  const erros = w.__erros(); if (erros.length) $('info').textContent = 'ERROS: ' + erros.join(' | ')
+  desenhar(); laco()
+}
+$('play').onclick = () => tocar(!tocando)
+$('pos').oninput = (e) => ir((+e.target.value / 1000) * total)
+document.onkeydown = (e) => { if (e.code === 'Space') { e.preventDefault(); tocar(!tocando) } if (e.code === 'ArrowRight') ir(T + 1); if (e.code === 'ArrowLeft') ir(T - 1) }
+</script>
+</body>
+</html>

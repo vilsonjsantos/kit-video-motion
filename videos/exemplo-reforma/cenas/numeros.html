@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="/motor/pagina/kit.css">
+<script src="/motor/pagina/kit.js"></script>
+<style>
+  #grafico { position: absolute; left: 160px; top: 300px; width: 1220px; height: 470px; }
+  .col { position: absolute; bottom: 60px; width: 120px; }
+  .barra { position: absolute; bottom: 0; left: 0; width: 120px; border-radius: 22px 22px 8px 8px; background: rgba(255, 255, 255, 0.55); transform-origin: bottom; }
+  .barra.final { background: var(--branco); }
+  .valor { position: absolute; left: 50%; transform: translate(-50%, 0); font-size: 30px; font-weight: 800; color: var(--branco); white-space: nowrap; }
+  .ano { position: absolute; left: 50%; bottom: -54px; transform: translate(-50%, 0); font-size: 28px; font-weight: 700; color: rgba(255, 255, 255, 0.85); }
+  #aviso { left: 1520px; top: 620px; font-size: 32px; background: var(--destaque); color: var(--escura); white-space: normal; width: 300px; text-align: left; line-height: 1.2; transform: translate(-50%, -50%); }
+  #grande { position: absolute; left: 1620px; top: 330px; transform: translate(-50%, 0); text-align: center; color: var(--branco); }
+  #grande .n { font-size: 150px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+  #grande .r { font-size: 30px; font-weight: 700; opacity: 0.9; }
+</style>
+</head><body>
+<div class="fundo primaria"></div>
+<div class="palco" id="cam">
+<div class="titulo claro abs" id="tit" style="left:120px; top:100px">Quanto *fica*?</div>
+<div class="fonte-oficial" id="fonte">LC 214/2025 · estimativa</div>
+<div id="grafico"></div>
+<div id="grande"><div class="n" id="n">0%</div><div class="r">em 2033</div></div>
+<div class="pilula" id="aviso">Confirme o seu caso com o contador</div>
+</div>
+<script>
+  const e1 = fala('e1'), e2 = fala('e2')
+  camera('#cam', { para: { s: 1.05, x: -30, y: -10 } })
+  palavras('#tit', 0.75, { passo: 0.12 })
+  aparecer('#fonte', 1.0, { tipo: 'fade' })
+
+  // as barras crescem uma a uma (estimativas de CBS + IBS em serviços financeiros, 2027 a 2033)
+  const DADOS = [[2027, 10.85], [2028, 10.85], [2029, 11.0], [2030, 11.15], [2031, 11.3], [2032, 11.5], [2033, 12.5]]
+  const ALTURA = (v) => (v - 9) * 110            // a escala começa em 9% para a diferença aparecer
+  DADOS.forEach(([ano, v], i) => {
+    const col = criar('div', { class: 'col', style: `left:${i * 175}px; height:${ALTURA(v)}px` }, '#grafico')
+    const barra = criar('div', { class: 'barra' + (i === 6 ? ' final' : ''), style: `height:${ALTURA(v)}px` }, col)
+    const val = criar('div', { class: 'valor', style: `bottom:${ALTURA(v) + 14}px`, texto: '' }, col)
+    criar('div', { class: 'ano', texto: String(ano) }, col)
+    const t0 = e1.ini + 0.3 + i * 0.28 + (i === 6 ? e2.ini - e1.ini - 0.6 : 0)
+    quadro((t) => { barra.style.transform = `scaleY(${Math.max(0, mola(t, t0, { amortecimento: 14, rigidez: 120 }))})` })
+    contar(val, { de: 9, ate: v, ini: t0, dur: 0.6, casas: 2, sufixo: '%' })
+    aparecer(val, t0 + 0.1, { tipo: 'fade' })
+    som(i === 6 ? 'pop-grave' : 'tic', t0, { vol: 0.7 })
+  })
+
+  // o número grande e o aviso, na fala e2
+  aparecer('#grande', e2.ini + 0.2, { tipo: 'zoom' })
+  contar('#n', { de: 0, ate: 12.5, ini: e2.ini + 0.2, dur: 1.0, casas: 1, sufixo: '%', som: true })
+  som('plim', e2.ini + 1.2)
+  pulsar('#grande', { ini: e2.ini + 1.4, amp: 0.02 })
+  aparecer('#aviso', e2.ini + e2.dur * 0.55, { tipo: 'mola' }); som('alerta', e2.ini + e2.dur * 0.55, { vol: 0.5 })
+</script>
+</body></html>

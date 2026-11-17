@@ -1,0 +1,223 @@
+<!doctype html>
+<!-- video.html — o MESTRE: junta as cenas (um iframe por cena), faz as transições entre elas, desenha a legenda e o logo,
+     e expõe ao gravador: __pronto(), __quadro(T), __sons(), __conferir(T), __erros(), __linha.
+     Abrir: /motor/pagina/video.html?video=videos/<nome>   (o kit.mjs faz isso; não precisa abrir à mão) -->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/motor/pagina/kit.css">
+<style>
+  html, body { background: #000; }
+  .k-cena { position: absolute; inset: 0; overflow: hidden; visibility: hidden; background: var(--fundo); }
+  .k-cena iframe { position: absolute; inset: 0; width: 1920px; height: 1080px; border: 0; background: transparent; }
+  #logo { position: absolute; right: 84px; top: 54px; height: 64px; z-index: 50; }
+  #logo img { height: 64px; width: auto; display: block; }
+  #legenda { position: absolute; left: 0; right: 0; bottom: 52px; display: flex; justify-content: center; z-index: 60; pointer-events: none; }
+  #legenda .caixa { max-width: 1500px; display: flex; align-items: center; gap: 22px; padding: 22px 40px; border-radius: 30px;
+    background: var(--leg-fundo, #FFFFFF); color: var(--leg-texto, #0B1F4D); box-shadow: 0 18px 50px rgba(0,0,0,0.25); }
+  #legenda .quem { flex: none; font-size: 28px; font-weight: 800; color: #fff; padding: 8px 18px; border-radius: 999px; letter-spacing: 0.02em; }
+  #legenda .txt { font-size: 46px; font-weight: 700; line-height: 1.24; letter-spacing: -0.005em; }
+  #legenda .txt b { color: var(--leg-destaque, var(--primaria)); font-weight: 800; }
+  #legenda .w { display: inline-block; white-space: pre; }
+</style>
+</head>
+<body>
+<div id="cenas"></div>
+<div id="logo"></div>
+<div id="legenda"><div class="caixa"><span class="quem"></span><span class="txt"></span></div></div>
+<script type="module">
+import { calcularLinha, falasGlobais } from '/motor/tempo.mjs'
+
+const ERROS = []
+window.addEventListener('error', (e) => ERROS.push('video.html: ' + (e.message || e)))
+const q = new URLSearchParams(location.search)
+const pasta = (q.get('video') || '').replace(/\\/g, '/').replace(/^\/+|\/+$/g, '')
+
+// curva "vai" (acelera e freia) para as transições
+function bezier(x1, y1, x2, y2) {
+  const A = (a, b) => 1 - 3 * b + 3 * a, B = (a, b) => 3 * b - 6 * a, C = (a) => 3 * a
+  const calc = (t, a, b) => ((A(a, b) * t + B(a, b)) * t + C(a)) * t
+  const der = (t, a, b) => 3 * A(a, b) * t * t + 2 * B(a, b) * t + C(a)
+  return (x) => { if (x <= 0) return 0; if (x >= 1) return 1; let t = x; for (let i = 0; i < 8; i++) { const d = der(t, x1, x2); if (Math.abs(d) < 1e-6) break; t -= (calc(t, x1, x2) - x) / d } return calc(Math.min(1, Math.max(0, t)), y1, y2) }
+}
+const VAI = bezier(0.7, 0, 0.2, 1), SAI = bezier(0.16, 1, 0.3, 1)
+const prog = (t, ini, dur, e = SAI) => dur <= 0 ? (t >= ini ? 1 : 0) : e(Math.min(1, Math.max(0, (t - ini) / dur)))
+
+async function json(url) {
+  const r = await fetch(url, { cache: 'no-store' })
+  if (!r.ok) throw new Error(`não achei ${url} (${r.status})`)
+  return r.json()
+}
+
+const video = await json(`/${pasta}/video.json`)
+const nomeMarca = video.marca || 'padrao'
+const marca = await json(`/marca/${nomeMarca}/marca.json`).catch((e) => { ERROS.push(`marca "${nomeMarca}": ${e.message} (usando a padrão)`); return json('/marca/padrao/marca.json') })
+const linha = calcularLinha(video)
+const falas = falasGlobais(linha)
+window.__linha = linha
+
+// a marca vira variáveis CSS aqui também (fundo das folhas, legenda)
+const raiz = document.documentElement
+for (const [k, v] of Object.entries(marca.cores || {})) raiz.style.setProperty('--' + k, v)
+const leg = marca.legenda || {}
+if (leg.fundo) raiz.style.setProperty('--leg-fundo', leg.fundo)
+if (leg.texto) raiz.style.setProperty('--leg-texto', leg.texto)
+if (leg.destaque) raiz.style.setProperty('--leg-destaque', leg.destaque)
+
+// o logo (duas versões: sobre fundo escuro e sobre fundo claro); some se a marca não tiver logo ou o vídeo pedir logo:false
+const logoBox = document.getElementById('logo')
+const temLogo = video.logo !== false && marca.logo
+const logos = {}
+if (temLogo) for (const v of ['sobreClaro', 'sobreEscuro']) if (marca.logo[v]) {
+  const img = document.createElement('img'); img.src = `/marca/${nomeMarca}/${marca.logo[v]}`; img.style.display = 'none'
+  if (marca.logo.altura) img.style.height = marca.logo.altura + 'px'
+  logoBox.appendChild(img); logos[v] = img
+}
+
+// uma "folha" (div + iframe) por cena
+const box = document.getElementById('cenas')
+const personagens = video.personagens || {}
+const cenas = linha.cenas.map((c, i) => {
+  const wrap = document.createElement('div')
+  wrap.className = 'k-cena'
+  wrap.style.zIndex = String(i + 1)
+  if (c.corFundo) wrap.style.background = c.corFundo
+  const fr = document.createElement('iframe')
+  const dados = { id: c.id, dur: c.dur, lead: c.lead, fps: linha.fps, falas: c.falas, marca, personagens }
+  fr.src = `/${pasta}/${c.arquivo || `cenas/${c.id}.html`}#dados=${encodeURIComponent(JSON.stringify(dados))}`
+  fr.setAttribute('scrolling', 'no')
+  wrap.appendChild(fr)
+  box.appendChild(wrap)
+  const carregou = new Promise((ok) => { fr.onload = ok })
+  return { c, wrap, fr, carregou }
+})
+
+window.__pronto = async () => {
+  await document.fonts.ready
+  for (const s of cenas) {
+    await s.carregou
+    const w = s.fr.contentWindow
+    if (!w || typeof w.__pronto !== 'function') { ERROS.push(`cena "${s.c.id}": o HTML não carregou o kit (falta <script src="/motor/pagina/kit.js">) ou o arquivo não existe`); continue }
+    try { await w.__pronto() } catch (e) { ERROS.push(`cena "${s.c.id}": ${e.message}`) }
+  }
+  window.__quadro(0)
+  return ERROS.length === 0
+}
+
+// ── transições: a cena NOVA entra durante os primeiros "lead" segundos dela; a anterior continua viva por baixo ──
+function transicao(s, p, papel) {
+  const st = s.wrap.style
+  st.transform = ''; st.clipPath = ''; st.opacity = '1'; st.borderRadius = ''; st.filter = ''
+  if (p >= 1) return
+  const tipo = papel === 'entra' ? s.c.transicao : s.saida
+  if (papel === 'entra') {
+    if (tipo === 'folha') { st.transform = `translateY(${(1 - p) * 100}%)`; st.borderRadius = `${(1 - p) * 240}px ${(1 - p) * 240}px 0 0` }
+    else if (tipo === 'deslizar') st.transform = `translateX(${(1 - p) * 100}%)`
+    else if (tipo === 'zoom') { st.transform = `scale(${0.86 + 0.14 * p})`; st.opacity = String(Math.min(1, p * 1.4)) }
+    else if (tipo === 'circulo') { const [x, y] = s.c.origem || [960, 540]; st.clipPath = `circle(${p * 2300}px at ${x}px ${y}px)` }
+  } else {
+    if (tipo === 'folha') { st.transform = `translateY(${-p * 7}%) scale(${1 - 0.04 * p})`; st.filter = `brightness(${1 - 0.25 * p})` }
+    else if (tipo === 'deslizar') st.transform = `translateX(${-p * 35}%)`
+    else if (tipo === 'zoom') st.transform = `scale(${1 + 0.08 * p})`
+    else if (tipo === 'circulo') st.filter = `brightness(${1 - 0.3 * p})`
+  }
+}
+cenas.forEach((s, i) => { s.saida = cenas[i + 1] ? cenas[i + 1].c.transicao : 'corte' })
+
+// ── a legenda: a fala ativa no rodapé, palavras entrando rápido; *palavra* em destaque ──
+const legBox = document.getElementById('legenda'), legCaixa = legBox.querySelector('.caixa')
+const legQuem = legBox.querySelector('.quem'), legTxt = legBox.querySelector('.txt')
+let legAtual = null
+function montarLegenda(f) {
+  legAtual = f.id + '@' + f.cena
+  const p = personagens[f.quem]
+  if (p && p.nome) { legQuem.style.display = ''; legQuem.textContent = p.nome; legQuem.style.background = p.cor || 'var(--primaria)' } else legQuem.style.display = 'none'
+  legTxt.innerHTML = ''
+  for (const w of f.texto.split(/(\s+)/)) {
+    if (!w) continue
+    const s = document.createElement('span'); s.className = 'w'
+    const m = w.match(/^\*([^*]+)\*([.,!?:;…]*)$/)
+    if (m) { const b = document.createElement('b'); b.textContent = m[1]; s.appendChild(b); if (m[2]) s.appendChild(document.createTextNode(m[2])) } else s.textContent = w.replace(/\*/g, '')
+    legTxt.appendChild(s)
+  }
+}
+function legenda(T) {
+  const vis = falas.filter((f) => f.legenda)
+  const f = vis.find((x) => T >= x.gIni && T < x.gFim)
+  if (!f) { legBox.style.opacity = '0'; return }
+  if (legAtual !== f.id + '@' + f.cena) montarLegenda(f)
+  // a caixa só "entra" se não havia fala logo antes (falas seguidas trocam só o texto)
+  const ant = vis.filter((x) => x.gFim <= f.gIni + 1e-6).pop()
+  const emenda = ant && f.gIni - ant.gFim < 0.6
+  const prox = vis.find((x) => x.gIni >= f.gFim - 1e-6)
+  const emendaFim = prox && prox.gIni - f.gFim < 0.6
+  const pin = emenda ? 1 : prog(T, f.gIni, 0.3)
+  const pout = emendaFim ? 0 : prog(T, f.gFim - 0.22, 0.22)
+  legBox.style.opacity = String(pin * (1 - pout))
+  legCaixa.style.transform = `translateY(${(1 - pin) * 30}px) scale(${0.96 + 0.04 * pin})`
+  const ws = legTxt.children
+  for (let i = 0; i < ws.length; i++) {
+    const w = prog(T, f.gIni + 0.05 + i * 0.03, 0.22)
+    ws[i].style.opacity = String(w)
+    ws[i].style.transform = `translateY(${(1 - w) * 14}px)`
+  }
+}
+
+window.__quadro = (T) => {
+  let topo = null
+  for (let i = 0; i < cenas.length; i++) {
+    const s = cenas[i], c = s.c
+    const vis = T >= c.ini && T < c.fim + 1e-6 && !(i < cenas.length - 1 && T >= cenas[i + 1].c.ini + cenas[i + 1].c.lead)
+    s.wrap.style.visibility = vis ? 'visible' : 'hidden'
+    if (!vis) continue
+    topo = s
+    const local = T - c.ini
+    const pEntra = c.lead > 0 ? prog(local, 0, c.lead, VAI) : 1
+    const prox = cenas[i + 1]
+    const pSai = prox && T >= prox.c.ini ? (prox.c.lead > 0 ? prog(T - prox.c.ini, 0, prox.c.lead, VAI) : 1) : 0
+    if (pEntra < 1) transicao(s, pEntra, 'entra'); else transicao(s, pSai, 'sai')
+    try { s.fr.contentWindow.__quadro && s.fr.contentWindow.__quadro(local) } catch (e) { ERROS.push(`cena "${c.id}" @${local.toFixed(2)}s: ${e.message}`) }
+  }
+  if (temLogo && topo) {
+    const escuro = (topo.c.fundo || 'claro') === 'escuro'
+    for (const [v, img] of Object.entries(logos)) img.style.display = (v === (escuro ? 'sobreEscuro' : 'sobreClaro')) ? '' : 'none'
+    if (!logos.sobreEscuro || !logos.sobreClaro) for (const img of Object.values(logos)) img.style.display = ''
+    logoBox.style.display = topo.c.logo === false ? 'none' : ''
+  }
+  legenda(T)
+}
+
+// ── para o gravador ──
+const SOM_TRANSICAO = { folha: 'whoosh', deslizar: 'whoosh', circulo: 'whoosh', zoom: 'whoosh-curto' }
+window.__sons = () => {
+  const out = []
+  for (const s of cenas) {
+    const c = s.c
+    const st = s.fr.contentWindow?.__estado?.()
+    for (const x of st?.sons || []) if (x.t >= -0.01 && x.t <= c.dur) out.push({ ...x, t: c.ini + x.t, cena: c.id })
+    const auto = c.somTransicao === false ? null : (c.somTransicao || SOM_TRANSICAO[c.transicao])
+    if (auto && c.lead > 0) out.push({ som: auto, t: c.ini, vol: 0.55, cena: c.id, auto: true })
+  }
+  for (const x of video.sons || []) out.push({ vol: 1, ...x })
+  return out.sort((a, b) => a.t - b.t)
+}
+window.__erros = () => {
+  const out = [...ERROS]
+  for (const s of cenas) for (const e of s.fr.contentWindow?.__estado?.().erros || []) out.push(`cena "${s.c.id}": ${e}`)
+  return out
+}
+/** Textos visíveis no instante T, em px do vídeo (só da cena que está inteira na tela; durante a transição devolve []). */
+window.__conferir = (T) => {
+  const s = cenas.find((x) => T >= x.c.ini + x.c.lead && T < x.c.fim && !cenas.some((y) => y !== x && T >= y.c.ini && T < y.c.fim && y.c.ini > x.c.ini))
+  const f = falas.find((x) => x.legenda && T >= x.gIni && T < x.gFim)
+  const r = legCaixa.getBoundingClientRect()
+  return {
+    cena: s ? s.c.id : null, local: s ? T - s.c.ini : null,
+    textos: s ? (s.fr.contentWindow.__textos?.() || []) : [],
+    legenda: f && +legBox.style.opacity > 0.5 ? { x: r.left, y: r.top, w: r.width, h: r.height, fala: f.id } : null,
+  }
+}
+window.__carregado = true
+</script>
+</body>
+</html>

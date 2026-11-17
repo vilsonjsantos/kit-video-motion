@@ -1,0 +1,26 @@
+<!doctype html>
+<!-- UMA CENA = um HTML 1920x1080. O kit controla o tempo: tudo que se mexe é função do tempo (veja docs/api.md).
+     Esta é só um ponto de partida: apague e crie a sua (exemplos completos em videos/exemplo-reforma/cenas/). -->
+<html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="/motor/pagina/kit.css">
+<script src="/motor/pagina/kit.js"></script>
+<style>
+  /* estilos só desta cena */
+  #selo { left: 1300px; top: 300px; width: 420px; height: 420px; border-radius: 100px; display: flex; align-items: center; justify-content: center; font-size: 180px; font-weight: 900; color: var(--primaria); }
+</style>
+</head><body>
+<div class="fundo primaria"></div>
+<div class="palco" id="cam">
+  <div class="titulo-g claro abs" id="tit" style="left:120px; top:300px">Título da<br>*abertura*</div>
+  <div class="cartao" id="selo">1</div>
+</div>
+<script>
+  const a1 = fala('a1')                                  // a fala desta cena (ini, fim, dur em segundos locais)
+  camera('#cam', { para: { s: 1.05 } })                  // a câmera aproxima devagar a cena inteira: nunca fica parado
+  palavras('#tit', 0.3, { passo: 0.12 })                 // as palavras sobem de uma máscara; *palavra* sai em destaque
+  som('whoosh-curto', 0.3, { vol: 0.5 })
+  aparecer('#selo', a1.ini + 0.4, { tipo: 'gira' })      // entra girando com mola, sincronizado com a fala
+  som('pop-grave', a1.ini + 0.4)
+  pulsar('#selo', { ini: a1.ini + 1.2 })
+</script>
+</body></html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="/motor/pagina/kit.css">
+<script src="/motor/pagina/kit.js"></script>
+<style>
+  /* letras vazadas andando no fundo (textura de movimento, bem apagada) */
+  .faixa { position: absolute; left: 0; white-space: nowrap; font-size: 170px; font-weight: 900; letter-spacing: -0.03em; color: transparent; -webkit-text-stroke: 3px var(--secundaria); opacity: 0.22; }
+  .velho { font-size: 50px; transform: translate(-50%, -50%); }
+  .novo { font-size: 72px; padding: 26px 56px; transform: translate(-50%, -50%); }
+  .novo .ponto { background: var(--destaque); }
+  .sub { position: absolute; transform: translate(-50%, 0); font-size: 34px; font-weight: 700; color: var(--clara); white-space: nowrap; }
+</style>
+</head><body>
+<div class="fundo escura"></div>
+<div class="palco" id="textura" data-conferir="nao">
+  <div class="faixa" id="f0" style="top:-30px">CBS · IBS · CBS · IBS · CBS · IBS · CBS · IBS ·</div>
+  <div class="faixa" id="f1" style="top:330px">PIS · COFINS · ICMS · ISS · PIS · COFINS · ICMS · ISS ·</div>
+  <div class="faixa" id="f2" style="top:690px">CBS · IBS · CBS · IBS · CBS · IBS · CBS · IBS ·</div>
+</div>
+<div class="titulo claro abs" id="tit" style="left:120px; top:110px">Quatro impostos viram *dois*</div>
+<div class="fonte-oficial" id="fonte">LC 214/2025</div>
+<svg class="palco">
+  <path id="seta1" d="M 860 430 C 960 430, 1000 470, 1120 470" stroke="var(--secundaria)" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path id="seta2" d="M 860 690 C 960 690, 1000 650, 1120 650" stroke="var(--secundaria)" stroke-width="8" fill="none" stroke-linecap="round"/>
+</svg>
+<div class="pilula velho" id="pis" style="left:420px; top:400px"><span class="ponto"></span>PIS</div>
+<div class="pilula velho" id="cofins" style="left:690px; top:460px"><span class="ponto"></span>Cofins</div>
+<div class="pilula velho" id="icms" style="left:420px; top:660px"><span class="ponto"></span>ICMS</div>
+<div class="pilula velho" id="iss" style="left:690px; top:720px"><span class="ponto"></span>ISS</div>
+<div class="pilula novo" id="cbs" style="left:1440px; top:440px"><span class="ponto"></span>CBS</div>
+<div class="sub" id="cbs-sub" style="left:1440px; top:515px">federal</div>
+<div class="pilula novo" id="ibs" style="left:1440px; top:680px"><span class="ponto"></span>IBS</div>
+<div class="sub" id="ibs-sub" style="left:1440px; top:755px">estados e municípios</div>
+<script>
+  const c1 = fala('c1'), c2 = fala('c2')
+  // a textura do fundo anda devagar em sentidos opostos o tempo todo
+  quadro((t) => ['#f0', '#f1', '#f2'].forEach((id, i) => { el(id).style.transform = `translateX(${(i % 2 ? 1 : -1) * t * 60 - 200}px)` }))
+
+  palavras('#tit', 0.45, { passo: 0.1 }); som('whoosh-curto', 0.45, { vol: 0.4 })
+  aparecer('#fonte', 0.9, { tipo: 'fade' })
+
+  // os quatro antigos entram com mola, um depois do outro, no ritmo da fala c1
+  ;['#pis', '#cofins', '#icms', '#iss'].forEach((id, i) => {
+    const t0 = c1.ini + 0.2 + i * 0.22
+    aparecer(id, t0, { tipo: 'mola' }); som('pop', t0, { vol: 0.7 })
+    flutuar(id, { amp: 6, periodo: 3 + i * 0.4, fase: i })
+  })
+
+  // na fala c2: os pares viajam até o novo imposto e somem dentro dele
+  const junta = c2.ini + 0.1
+  mover('#pis', junta, 0.7, { x: 1020, y: 40, s: 0.4 }); mover('#cofins', junta + 0.08, 0.7, { x: 750, y: -20, s: 0.4 })
+  sumir('#pis', junta + 0.45, { dur: 0.25 }); sumir('#cofins', junta + 0.5, { dur: 0.25 })
+  const junta2 = c2.ini + c2.dur * 0.5
+  mover('#icms', junta2, 0.7, { x: 1020, y: 20, s: 0.4 }); mover('#iss', junta2 + 0.08, 0.7, { x: 750, y: -40, s: 0.4 })
+  sumir('#icms', junta2 + 0.45, { dur: 0.25 }); sumir('#iss', junta2 + 0.5, { dur: 0.25 })
+  som('deslizar', junta); som('deslizar', junta2)
+
+  tracar('#seta1', junta - 0.3, 0.5); tracar('#seta2', junta2 - 0.3, 0.5)
+  aparecer('#cbs', junta + 0.55, { tipo: 'mola' }); som('pop-grave', junta + 0.55); som('plim', junta + 0.6, { vol: 0.5 })
+  aparecer('#cbs-sub', junta + 0.8, { tipo: 'sobe', distancia: 20 })
+  aparecer('#ibs', junta2 + 0.55, { tipo: 'mola' }); som('pop-grave', junta2 + 0.55); som('plim', junta2 + 0.6, { vol: 0.5 })
+  aparecer('#ibs-sub', junta2 + 0.8, { tipo: 'sobe', distancia: 20 })
+  pulsar('#cbs', { ini: junta + 1.2 }); pulsar('#ibs', { ini: junta2 + 1.2 })
+</script>
+</body></html>

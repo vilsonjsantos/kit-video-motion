@@ -1,0 +1,14 @@
+{
+  "titulo": "Título interno do vídeo",
+  "marca": "padrao",
+  "personagens": {
+    "apresentadora": { "nome": "Ana", "cor": "#1E6BFF" }
+  },
+  "som": { "musica": "trilha-otimista", "volumeMusica": 0.3 },
+  "cenas": [
+    { "id": "abertura", "fundo": "escuro",
+      "falas": [
+        { "id": "a1", "texto": "A primeira frase do vídeo, com a palavra *importante* em destaque." }
+      ] }
+  ]
+}

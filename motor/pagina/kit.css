@@ -1,0 +1,56 @@
+/* kit.css — a base de toda cena: tela 1920x1080, fonte, cores da marca (variáveis) e algumas peças prontas.
+   As peças são PONTO DE PARTIDA, não obrigação: crie as suas classes na própria cena. */
+@font-face { font-family: 'Figtree'; src: url('/fontes/Figtree-VariableFont_wght.ttf') format('truetype'); font-weight: 300 900; font-style: normal; }
+@font-face { font-family: 'Figtree'; src: url('/fontes/Figtree-Italic-VariableFont_wght.ttf') format('truetype'); font-weight: 300 900; font-style: italic; }
+
+:root {
+  /* papéis de cor (a marca do video.json sobrescreve): use var(--primaria) etc., nunca a cor solta, para trocar de marca sem reescrever */
+  --primaria: #1E6BFF;   /* a cor da marca (fundos fortes, destaques) */
+  --secundaria: #4C8DFF; /* a segunda cor (linhas, ícones, a 2ª linha do título) */
+  --escura: #0B1F4D;     /* fundo escuro e texto principal em fundo claro */
+  --clara: #DCE6FF;      /* fundo claro alternativo, cartões apagados */
+  --fundo: #F3F6FF;      /* fundo claro padrão */
+  --destaque: #FFC93C;   /* o amarelo dos alertas e números importantes (pouco!) */
+  --sucesso: #2BB673;
+  --perigo: #F0506E;
+  --texto: #0B1F4D;
+  --branco: #FFFFFF;
+  --sombra: 0 22px 50px rgba(11, 31, 77, 0.22);
+  --fonte: 'Figtree', 'Segoe UI', Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+body { font-family: var(--fonte); color: var(--texto); -webkit-font-smoothing: antialiased; }
+/* nada de transition do CSS: o tempo é controlado quadro a quadro (animações @keyframes funcionam: o kit as pausa e posiciona) */
+*, *::before, *::after { transition: none !important; }
+
+/* o fundo da cena (use um só por cena) */
+.fundo { position: absolute; inset: 0; background: var(--fundo); }
+.fundo.primaria { background: var(--primaria); } .fundo.escura { background: var(--escura); } .fundo.clara { background: var(--clara); }
+.palco { position: absolute; inset: 0; }           /* container para câmera() e para posicionar livre */
+svg.palco { width: 1920px; height: 1080px; overflow: visible; }
+.abs { position: absolute; }
+
+/* tipografia */
+.titulo { font-size: 104px; font-weight: 800; line-height: 1.02; letter-spacing: -0.03em; }
+.titulo-g { font-size: 180px; font-weight: 900; line-height: 0.98; letter-spacing: -0.04em; }
+.subtitulo { font-size: 56px; font-weight: 700; line-height: 1.12; letter-spacing: -0.015em; }
+.texto { font-size: 40px; font-weight: 600; line-height: 1.3; }
+.rotulo { font-size: 30px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.claro { color: var(--branco); }
+.destaque { color: var(--destaque); }
+.em-primaria { color: var(--primaria); } .em-secundaria { color: var(--secundaria); }
+
+/* a máscara das palavras de palavras() */
+.k-masc { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.14em; margin-bottom: -0.14em; padding-right: 0.06em; }
+.k-pal { display: inline-block; will-change: transform; }
+
+/* peças */
+.pilula { position: absolute; display: inline-flex; align-items: center; gap: 0.45em; background: var(--branco); color: var(--escura); font-size: 44px; font-weight: 800; padding: 0.42em 0.85em; border-radius: 999px; box-shadow: var(--sombra); white-space: nowrap; }
+.pilula .ponto { width: 0.75em; height: 0.75em; border-radius: 0.26em; background: var(--primaria); display: inline-block; flex: none; }
+.cartao { position: absolute; background: var(--branco); border-radius: 36px; box-shadow: var(--sombra); padding: 40px 44px; }
+.selo { position: absolute; display: inline-flex; align-items: center; justify-content: center; width: 96px; height: 96px; border-radius: 30px; background: var(--primaria); color: var(--branco); font-size: 52px; font-weight: 900; }
+.circulo { position: absolute; border-radius: 50%; }
+/* de onde veio a informação: canto de cima à direita, embaixo do logo (o rodapé é da legenda) */
+.fonte-oficial { position: absolute; right: 84px; top: 128px; font-size: 24px; font-weight: 700; padding: 10px 22px; border-radius: 999px; background: rgba(11, 31, 77, 0.08); color: var(--secundaria); }
+.fundo.primaria .fonte-oficial, .fundo.escura .fonte-oficial { background: rgba(255, 255, 255, 0.16); color: var(--branco); }
