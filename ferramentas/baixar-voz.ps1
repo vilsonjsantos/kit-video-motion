@@ -1,4 +1,4 @@
-﻿﻿# baixar-voz.ps1 — baixa o PACOTE DA VOZ (opcional) da página de Releases do repositório, sem instalar nada:
+﻿# baixar-voz.ps1 — baixa o PACOTE DA VOZ (opcional) da página de Releases do repositório, sem instalar nada:
 #   runtime\python\  (Python 3.12 portátil + PyTorch CPU + Chatterbox)
 #   modelo\          (o modelo de voz multilíngue do Chatterbox, ~3,2 GB)
 # Os arquivos grandes vêm em PEDAÇOS de 45 MB (redes de empresa costumam bloquear downloads grandes); o script baixa os
