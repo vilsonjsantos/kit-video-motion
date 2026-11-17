@@ -17,6 +17,8 @@
 </head><body>
 <div class="fundo primaria"></div>
 <div class="palco" id="cam">
+<div class="circulo" id="bola1" style="left:1380px; top:560px; width:700px; height:700px; background:rgba(255,255,255,0.10)"></div>
+<div class="circulo" id="bola2" style="left:-200px; top:-260px; width:520px; height:520px; background:rgba(3,34,122,0.10)"></div>
 <div class="titulo claro abs" id="tit" style="left:120px; top:100px">Quanto *fica*?</div>
 <div class="fonte-oficial" id="fonte">LC 214/2025 · estimativa</div>
 <div id="grafico"></div>
@@ -26,6 +28,8 @@
 <script>
   const e1 = fala('e1'), e2 = fala('e2')
   camera('#cam', { para: { s: 1.05, x: -30, y: -10 } })
+  flutuar('#bola1', { amp: 40, periodo: 5 }); flutuar('#bola2', { amp: 30, periodo: 6, fase: 2 })
+  flutuar('#grafico', { amp: 6, periodo: 4 })
   palavras('#tit', 0.75, { passo: 0.12 })
   aparecer('#fonte', 1.0, { tipo: 'fade' })
 
