@@ -1,4 +1,8 @@
-node_modules/
+# node_modules VAI no repositório (a máquina do trabalho não instala nada): só o playwright-core
+node_modules/.package-lock.json
+# o pacote da voz (Python + PyTorch + ffmpeg, e o modelo): baixado da página de Releases, grande demais para o git
+runtime/
+modelo/
 # saídas de cada vídeo (refaça com npm run render)
 videos/*/_saida/
 # a marca da empresa fica SÓ na sua máquina (logo, cores): nunca no repositório público

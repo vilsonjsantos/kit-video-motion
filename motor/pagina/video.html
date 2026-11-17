@@ -50,6 +50,14 @@ async function json(url) {
 }
 
 const video = await json(`/${pasta}/video.json`)
+// NARRAÇÃO (opcional): se "npm run narrar" já gerou voz/voz.json, cada fala com voz dura o tempo do áudio (+0,2 s)
+const vozIdx = video.voz === false ? {} : await fetch(`/${pasta}/voz/voz.json`, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : {})).catch(() => ({}))
+for (const c of video.cenas) for (const f of c.falas || []) {
+  const v = vozIdx[f.id]
+  if (!v || f.voz === false) continue
+  if (v.fonte !== undefined && v.fonte !== (f.falar || f.texto)) ERROS.push(`fala "${f.id}": o texto mudou depois da voz gerada; rode "npm run narrar" de novo`)
+  f.dur = +(v.dur + 0.2).toFixed(3); f.audio = v.arquivo
+}
 const nomeMarca = video.marca || 'padrao'
 const marca = await json(`/marca/${nomeMarca}/marca.json`).catch((e) => { ERROS.push(`marca "${nomeMarca}": ${e.message} (usando a padrão)`); return json('/marca/padrao/marca.json') })
 const linha = calcularLinha(video)
@@ -201,6 +209,8 @@ window.__sons = () => {
   for (const x of video.sons || []) out.push({ vol: 1, ...x })
   return out.sort((a, b) => a.t - b.t)
 }
+/** As falas com voz gerada: [{arquivo (relativo à raiz do kit), t (s no vídeo)}] */
+window.__vozes = () => falas.filter((f) => f.audio).map((f) => ({ arquivo: `${pasta}/${f.audio}`, t: f.gIni, id: f.id }))
 window.__erros = () => {
   const out = [...ERROS]
   for (const s of cenas) for (const e of s.fr.contentWindow?.__estado?.().erros || []) out.push(`cena "${s.c.id}": ${e}`)

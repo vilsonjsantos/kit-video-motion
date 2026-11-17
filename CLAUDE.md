@@ -2,7 +2,9 @@
 
 Você faz **vídeos explicativos em motion graphics** (1920x1080, 30 fps): cada cena é uma página **HTML/CSS/SVG** que você
 escreve com liberdade; o kit grava quadro a quadro num navegador, põe **legenda** (as falas), **efeitos sonoros** e **trilha**,
-e gera o MP4. **Não há voz**: a legenda é a narração, e o ritmo vem do movimento e dos efeitos sonoros.
+e gera o MP4. A legenda é a narração; o ritmo vem do movimento e dos efeitos sonoros. **Voz é opcional**: se o pacote da
+voz estiver baixado (`npm run diagnostico` diz "voz local: pronta"), `npm run narrar` gera a narração em PT-BR no próprio
+computador (voz clonada, offline). Guia da voz: `voz/LEIA-ME.md`.
 
 Fale com a pessoa em **português do Brasil**. Mostre o trabalho e peça ok nos pontos marcados com ✋.
 
@@ -13,11 +15,12 @@ que roda.
 
 | # | Passada | Arquivo | Comando para conferir |
 |---|---|---|---|
-| 0 | Preparar (só na 1ª vez) | — | `npm install` e `npm run diagnostico` |
+| 0 | Preparar (só na 1ª vez) | — | `npm run diagnostico` (nada a instalar; a voz é opcional: `ferramentas\baixar-voz.bat`) |
 | 1 | Roteiro ✋ | `videos/<nome>/roteiro.md` | — |
 | 2 | Storyboard + falas ✋ | `storyboard.md` + `video.json` | `npm run conferir -- videos/<nome>` (já mostra a duração de cada cena) |
 | 3 | Cena por cena (✋ a cada 2–3 cenas) | `cenas/<id>.html` | `npm run folha -- videos/<nome> <id>` e LEIA a imagem |
 | 4 | Conferir tudo | — | `npm run conferir -- videos/<nome>`: **zero erros**; trate os avisos |
+| 5a | Voz (opcional, só com as falas aprovadas) | `"falar"` nas falas com siglas | `npm run narrar -- videos/<nome>` (demora: ~10 s por 1 s de fala) e depois `conferir` de novo |
 | 5 | Som e prévia ✋ | `som()` nas cenas, `"som"` no video.json | `npm run render -- videos/<nome> --previa` (ou `npm run ver -- videos/<nome>`) |
 | 6 | Render final | — | `npm run render -- videos/<nome>` → `videos/<nome>/_saida/video.mp4` |
 
@@ -83,6 +86,9 @@ molde: invente composições novas. Vocabulário de movimento e ideias de cena: 
 - `"quem"` faz a boca do personagem mexer e mostra o nome na legenda. `"legenda": false` esconde a legenda daquela fala (quando a própria cena escreve o texto grande).
 - `"fundo": "escuro"` troca o logo para a versão clara. Transições: `folha`, `deslizar`, `zoom`, `circulo` (com `"origem": [x, y]`), `corte`.
 - Trilhas: `trilha-otimista`, `trilha-calma` (ou um arquivo seu em `musica/`), ou `"musica": null`.
+- **Com voz:** `"voz": {"referencia": "achird"}` no topo; `"falar": "texto que a voz lê"` nas falas com sigla (CBS → "cê bê esse");
+  números e % viram extenso sozinhos. Depois de narrar, cada fala dura o tempo do áudio (as cenas mudam de duração; por isso
+  sincronize sempre com `fala('id').ini`, nunca com segundos fixos). Texto mudou? narre aquela fala de novo (`--so id`).
 
 ## A marca
 - **`"marca": "porto"`** — a marca da Porto, já pronta: ciano `#05A0FF` (primária), real `#2B55C2` (secundária), marinho
@@ -97,3 +103,5 @@ molde: invente composições novas. Vocabulário de movimento e ideias de cena: 
 - `docs/api.md` — todas as funções das cenas (leia antes da 1ª cena) · `docs/estilo.md` — o visual, o movimento, ideias de cena
 - `docs/som.md` — os efeitos sonoros e quando usar · `videos/exemplo-reforma/` — um vídeo completo de referência (66 s, 6 cenas)
 - `motor/` — o motor (não precisa ler) · `sons/`, `musica/`, `fontes/` — gerados por código / fonte livre (OFL)
+- `voz/` — narração local (`LEIA-ME.md`, `narrar.py`, `referencias/`) · `runtime/` e `modelo/` — o pacote da voz (baixado, fora do git)
+- Nada para instalar: `node_modules` e o `ffmpeg` (`motor/bin/`) já vêm no repositório. Não rode `npm install`.

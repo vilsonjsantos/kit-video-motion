@@ -7,7 +7,8 @@
 //   npm run conferir -- videos/<nome>               procura problemas: erro de JS, texto fora/sobre texto/sob a legenda, tela parada...
 //   npm run som -- videos/<nome>                    mixa trilha + efeitos em _saida/som.wav
 //   npm run render -- videos/<nome> [--previa] [--workers 3]   gera _saida/video.mp4 (ou _saida/previa.mp4, 960x540 15 fps)
-//   npm run diagnostico                            confere Node, navegador, ffmpeg, fontes, sons e músicas
+//   npm run narrar -- videos/<nome> [--so a1,b2] [--refazer]   gera a VOZ das falas (offline, precisa do pacote de voz: voz/LEIA-ME.md)
+//   npm run diagnostico                            confere Node, navegador, ffmpeg, fontes, sons, músicas e a voz
 import fs from 'node:fs'
 import path from 'node:path'
 import { spawn, spawnSync, exec } from 'node:child_process'
@@ -209,19 +210,37 @@ async function conferir() {
 }
 
 // ── som ──────────────────────────────────────────────────────────────────────────────────────────────────────────
-async function fazerSom(v, sons, linha) {
+async function fazerSom(v, sons, linha, vozes = []) {
   const ffmpeg = await ffmpegCaminho()
   const video = JSON.parse(fs.readFileSync(path.join(v.abs, 'video.json'), 'utf8'))
   const cfg = video.som || {}
   const arq = saidaDe(v, 'som.wav')
-  const r = mixar({ ffmpeg, pastaVideo: v.abs, total: linha.total, cues: sons, musica: cfg.musica === undefined ? 'trilha-otimista' : cfg.musica, volMusica: cfg.volumeMusica ?? 0.3, volEfeitos: cfg.volumeEfeitos ?? 0.8, saida: arq })
+  const r = mixar({ ffmpeg, pastaVideo: v.abs, total: linha.total, cues: sons, vozes, musica: cfg.musica === undefined ? 'trilha-otimista' : cfg.musica, volMusica: cfg.volumeMusica ?? 0.3, volEfeitos: cfg.volumeEfeitos ?? 0.8, volVoz: cfg.volumeVoz ?? 1, saida: arq })
   if (r.faltando.length) console.log(`⚠ sons que não existem (ignorados): ${r.faltando.join(', ')}`)
-  console.log(`${rel(arq)}  (${r.efeitos} efeitos, música: ${cfg.musica === undefined ? 'trilha-otimista' : cfg.musica || 'nenhuma'})`)
+  console.log(`${rel(arq)}  (${r.vozes ? r.vozes + ' falas com voz, ' : ''}${r.efeitos} efeitos, música: ${cfg.musica === undefined ? 'trilha-otimista' : cfg.musica || 'nenhuma'})`)
   return arq
 }
 async function som() {
   const v = pastaDoVideo(posicionais[0])
-  await comVideo(v, async ([{ page, linha, erros }]) => { mostrarErros(erros); await fazerSom(v, await page.evaluate(() => window.__sons()), linha) })
+  await comVideo(v, async ([{ page, linha, erros }]) => { mostrarErros(erros); await fazerSom(v, await page.evaluate(() => window.__sons()), linha, await page.evaluate(() => window.__vozes())) })
+}
+
+// ── narrar (voz local, offline) ──────────────────────────────────────────────────────────────────────────────────
+async function narrar() {
+  const v = pastaDoVideo(posicionais[0])
+  const py = process.env.KIT_PYTHON || path.join(RAIZ, 'runtime', 'python', process.platform === 'win32' ? 'python.exe' : 'bin/python3')
+  if (!fs.existsSync(py)) sair(`falta o pacote da voz (runtime/python). Veja voz/LEIA-ME.md: rode ferramentas\\baixar-voz.bat (ou baixe da página de Releases do repositório e extraia na pasta do kit).`)
+  const extra = []
+  if (flags.so) extra.push('--so', String(flags.so))
+  if (flags.refazer) extra.push('--refazer')
+  const ff = path.join(RAIZ, 'motor', 'bin', 'ffmpeg.exe')
+  const env = { ...process.env, PYTHONIOENCODING: 'utf-8', PYTHONWARNINGS: 'ignore', ...(fs.existsSync(ff) ? { FFMPEG_EXE: ff } : {}) }
+  await new Promise((ok, falha) => {
+    const p = spawn(py, ['-X', 'utf8', path.join(RAIZ, 'voz', 'narrar.py'), v.rel, ...extra], { cwd: RAIZ, env, stdio: ['ignore', 'inherit', 'pipe'] })
+    let err = ''; p.stderr.on('data', (d) => { const s = String(d); if (!/warn|Warning|deprecat|pkg_resources|FutureWarning|^\s*$/i.test(s)) err += s })
+    p.on('close', (c) => (c === 0 ? ok() : falha(new Error('a narração falhou:\n' + err.split('\n').slice(-15).join('\n')))))
+  })
+  console.log('agora as falas com voz duram o tempo do áudio: rode "npm run conferir" (as cenas podem ter mudado de duração)')
 }
 
 // ── render ───────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -265,7 +284,8 @@ async function render() {
     let r = spawnSync(ffmpeg, ['-y', '-v', 'error', '-f', 'concat', '-safe', '0', '-i', lista, '-c', 'copy', mudo])
     if (r.status !== 0) throw new Error('falha ao juntar as partes: ' + r.stderr)
     const sons = (await abertos[0].page.evaluate(() => window.__sons())).map((s) => ({ ...s, t: s.t - de / fps })).filter((s) => s.t > -1)
-    const somArq = await fazerSom(v, sons, { ...linha, total: n / fps })
+    const vozes = (await abertos[0].page.evaluate(() => window.__vozes())).map((s) => ({ ...s, t: s.t - de / fps })).filter((s) => s.t > -0.01)
+    const somArq = await fazerSom(v, sons, { ...linha, total: n / fps }, vozes)
     const final = saidaDe(v, previa ? 'previa.mp4' : 'video.mp4')
     r = spawnSync(ffmpeg, ['-y', '-v', 'error', '-i', mudo, '-i', somArq, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', final])
     if (r.status !== 0) throw new Error('falha ao juntar vídeo e som: ' + r.stderr)
@@ -286,10 +306,14 @@ async function diagnostico() {
   const sons = listarSons(path.join(RAIZ, 'videos', '_nada')); ok(sons.length > 0, `${sons.length} efeitos sonoros: ${sons.join(', ')}`)
   const mus = fs.existsSync(path.join(RAIZ, 'musica')) ? fs.readdirSync(path.join(RAIZ, 'musica')).filter((f) => /\.(mp3|wav)$/.test(f)) : []
   ok(mus.length > 0, `${mus.length} trilha(s): ${mus.join(', ')}`)
+  const py = path.join(RAIZ, 'runtime', 'python', 'python.exe'), mod = path.join(RAIZ, 'modelo', 't3_mtl23ls_v2.safetensors')
+  ok(fs.existsSync(py) && fs.existsSync(mod), fs.existsSync(py) && fs.existsSync(mod) ? 'voz local (narração): pronta' : 'voz local (narração): pacote não baixado (opcional; veja voz/LEIA-ME.md)')
+  const refs = fs.existsSync(path.join(RAIZ, 'voz', 'referencias')) ? fs.readdirSync(path.join(RAIZ, 'voz', 'referencias')).filter((f) => f.endsWith('.wav')).map((f) => f.slice(0, -4)) : []
+  ok(refs.length > 0, `vozes de referência: ${refs.join(', ')}`)
   const marcas = fs.readdirSync(path.join(RAIZ, 'marca')).flatMap((d) => d === 'local' ? fs.readdirSync(path.join(RAIZ, 'marca', 'local')).map((x) => 'local/' + x) : [d])
   ok(true, `marcas: ${marcas.join(', ')}`)
 }
 
-const CMDS = { novo, ver, quadros, folha, conferir, som, render, diagnostico }
+const CMDS = { novo, ver, quadros, folha, conferir, som, render, narrar, diagnostico }
 if (!CMDS[cmd]) sair(`comandos: ${Object.keys(CMDS).join(', ')}  (veja o topo de motor/kit.mjs ou o CLAUDE.md)`)
 Promise.resolve(CMDS[cmd]()).catch((e) => sair('✖ ' + (e.stack || e.message || e)))

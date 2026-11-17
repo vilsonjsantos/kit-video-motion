@@ -1,0 +1,3 @@
+ffmpeg.exe — FFmpeg 7.1 "essentials" (build de https://www.gyan.dev/ffmpeg/builds/), licença GPL v3.
+Código-fonte do FFmpeg: https://ffmpeg.org/download.html · Licença: https://www.gnu.org/licenses/gpl-3.0.html
+Vai junto no repositório para o kit funcionar em máquinas onde não se pode instalar nada.

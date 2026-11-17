@@ -1,0 +1,86 @@
+{
+ "a1": {
+  "arquivo": "voz/a1.wav",
+  "dur": 3.796,
+  "assinatura": "ca8abbafed7d",
+  "fonte": "Em *2027*, os impostos sobre serviços começam a mudar.",
+  "texto_falado": "Em dois mil e vinte e sete, os impostos sobre serviços começam a mudar."
+ },
+ "b1": {
+  "arquivo": "voz/b1.wav",
+  "dur": 4.062,
+  "assinatura": "3c46a46d2ee8",
+  "fonte": "Cê bê esse, i bê esse, nota fiscal, crédito... por onde eu começo?",
+  "texto_falado": "Cê bê esse, i bê esse, nota fiscal, crédito, por onde eu começo?"
+ },
+ "b2": {
+  "arquivo": "voz/b2.wav",
+  "dur": 2.009,
+  "assinatura": "63ba88ab8bfd",
+  "fonte": "Calma! Vamos por partes.",
+  "texto_falado": "Calma! Vamos por partes."
+ },
+ "c1": {
+  "arquivo": "voz/c1.wav",
+  "dur": 2.509,
+  "assinatura": "04fe988fd32f",
+  "fonte": "Primeiro: *quatro* impostos viram *dois*.",
+  "texto_falado": "Primeiro: quatro impostos viram dois."
+ },
+ "c2": {
+  "arquivo": "voz/c2.wav",
+  "dur": 5.205,
+  "assinatura": "c9e9aaee5358",
+  "fonte": "A cê bê esse substitui o pis e a cofins. E o i bê esse substitui os impostos de estados e municípios.",
+  "texto_falado": "A cê bê esse substitui o pis e a cofins. E o i bê esse substitui os impostos de estados e municípios."
+ },
+ "d1": {
+  "arquivo": "voz/d1.wav",
+  "dur": 2.306,
+  "assinatura": "345d0a023d28",
+  "fonte": "*2026* é o ano de teste.",
+  "texto_falado": "dois mil e vinte e seis é o ano de teste."
+ },
+ "d2": {
+  "arquivo": "voz/d2.wav",
+  "dur": 4.305,
+  "assinatura": "790b2263a289",
+  "fonte": "Em dois mil e vinte e sete, a cê bê esse começa de verdade.",
+  "texto_falado": "Em dois mil e vinte e sete, a cê bê esse começa de verdade."
+ },
+ "d3": {
+  "arquivo": "voz/d3.wav",
+  "dur": 6.387,
+  "assinatura": "7c43e886dd47",
+  "fonte": "De dois mil e vinte e nove a dois mil e trinta e dois, o i bê esse entra aos poucos, e em dois mil e trinta e três a transição termina.",
+  "texto_falado": "De dois mil e vinte e nove a dois mil e trinta e dois, o i bê esse entra aos poucos, e em dois mil e trinta e três a transição termina."
+ },
+ "e1": {
+  "arquivo": "voz/e1.wav",
+  "dur": 6.432,
+  "assinatura": "7c8813f36247",
+  "fonte": "Nos serviços financeiros, cê bê esse e i bê esse somados começam perto de onze por cento.",
+  "texto_falado": "Nos serviços financeiros, cê bê esse e i bê esse somados começam perto de onze por cento."
+ },
+ "e2": {
+  "arquivo": "voz/e2.wav",
+  "dur": 5.735,
+  "assinatura": "ba9926feda16",
+  "fonte": "E chegam a *12,5%* em 2033. Confirme o seu caso com o contador.",
+  "texto_falado": "E chegam a doze vírgula cinco por cento em dois mil e trinta e três. Confirme o seu caso com o contador."
+ },
+ "f1": {
+  "arquivo": "voz/f1.wav",
+  "dur": 3.833,
+  "assinatura": "d15364ccdf1a",
+  "fonte": "O que fazer agora? Fale com o contador, emita a nota e acompanhe as regras.",
+  "texto_falado": "O que fazer agora? Fale com o contador, emita a nota e acompanhe as regras."
+ },
+ "f2": {
+  "arquivo": "voz/f2.wav",
+  "dur": 3.137,
+  "assinatura": "1d263b0dccd2",
+  "fonte": "Por partes, faz sentido!",
+  "texto_falado": "Por partes, faz sentido!"
+ }
+}

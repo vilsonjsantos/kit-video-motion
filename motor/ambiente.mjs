@@ -47,14 +47,16 @@ export async function abrirNavegador() {
 }
 
 let _ffmpeg = null
-/** O ffmpeg: FFMPEG (variável) → ffmpeg do PATH → pacote ffmpeg-static. */
+/** O ffmpeg: FFMPEG (variável) → motor/bin/ffmpeg.exe (vai no repositório) → ffmpeg do PATH. */
 export async function ffmpegCaminho() {
   if (_ffmpeg) return _ffmpeg
   const ok = (p) => p && spawnSync(p, ['-version'], { stdio: 'ignore' }).status === 0
   if (ok(process.env.FFMPEG)) return (_ffmpeg = process.env.FFMPEG)
+  const local = path.join(RAIZ, 'motor', 'bin', process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg')   // vai junto no repositório (Windows)
+  if (fs.existsSync(local) && ok(local)) return (_ffmpeg = local)
   if (ok('ffmpeg')) return (_ffmpeg = 'ffmpeg')
   try { const m = await import('ffmpeg-static'); if (ok(m.default)) return (_ffmpeg = m.default) } catch {}
-  throw new Error('não achei o ffmpeg. Opções: (1) "npm install" de novo (ele tenta baixar o ffmpeg-static);\n  (2) instale o ffmpeg e ponha no PATH; (3) set FFMPEG=C:\\caminho\\ffmpeg.exe')
+  throw new Error('não achei o ffmpeg. Rode ferramentas\\baixar-voz.bat (o pacote traz o ffmpeg em runtime\\ffmpeg),\n  ou ponha o ffmpeg no PATH, ou: set FFMPEG=C:\\caminho\\ffmpeg.exe')
 }
 
 /** Abre o video.html de uma pasta de vídeo numa aba 1920x1080 e espera tudo carregar. Devolve { page, linha, erros }. */
