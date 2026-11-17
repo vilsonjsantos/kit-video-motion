@@ -1,0 +1,18 @@
+{
+  "nome": "Porto",
+  "origem": "cores medidas nos vídeos oficiais do canal Porto e no site; logos do site oficial (troque pelos arquivos da Comunicação se tiver)",
+  "cores": {
+    "primaria": "#05A0FF",
+    "secundaria": "#2B55C2",
+    "escura": "#03227A",
+    "clara": "#C1CBED",
+    "fundo": "#EEF3FF",
+    "destaque": "#FFC93C",
+    "sucesso": "#2BB673",
+    "perigo": "#F0506E",
+    "texto": "#001237",
+    "branco": "#FFFFFF"
+  },
+  "logo": { "sobreClaro": "logo-azul.svg", "sobreEscuro": "logo-claro.svg", "altura": 48 },
+  "legenda": { "fundo": "#FFFFFF", "texto": "#03227A", "destaque": "#05A0FF" }
+}

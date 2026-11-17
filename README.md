@@ -35,11 +35,11 @@ O Claude segue o `CLAUDE.md`. Comandos (o Claude roda sozinho, mas você também
 Exemplo pronto: `videos/exemplo-reforma/` (66 s, 6 cenas, 2 personagens). Renderize com `npm run render -- videos/exemplo-reforma`
 (~1 min num PC comum). O conteúdo dele é ilustrativo e simplificado: não use como material oficial.
 
-## Marca da empresa
-O repositório tem só uma marca de exemplo. Para a sua: copie `marca/padrao/` para `marca/local/<empresa>/`
-(**ignorada pelo git**: logo e cores da empresa nunca vão para o repositório público), troque as cores e os logos e use
-`"marca": "local/<empresa>"` no `video.json`.
+## Marcas
+- `marca/porto/` — cores e logos da Porto (logos do site oficial; troque pelos arquivos da Comunicação se tiver). Use `"marca": "porto"`.
+- `marca/padrao/` — marca neutra de exemplo.
+- Outra marca: copie `marca/padrao/` para `marca/<nome>/` (ou `marca/local/<nome>/`, ignorada pelo git) e troque cores e logos.
 
 ## Licenças
-Código: MIT. Fonte Figtree: SIL Open Font License (`fontes/OFL.txt`). Efeitos e trilhas: gerados por código neste repositório
+Código: MIT (os logos em `marca/porto/` são marca registrada da Porto e não entram na licença MIT). Fonte Figtree: SIL Open Font License (`fontes/OFL.txt`). Efeitos e trilhas: gerados por código neste repositório
 (`ferramentas/`), livres para qualquer uso. Personagens: desenhados em código (`motor/pagina/pessoa.js`).

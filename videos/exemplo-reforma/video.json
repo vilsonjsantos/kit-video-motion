@@ -1,8 +1,8 @@
 {
   "titulo": "A reforma tributária em 1 minuto (exemplo do kit)",
-  "marca": "padrao",
+  "marca": "porto",
   "personagens": {
-    "apresentadora": { "nome": "Ana", "cor": "#1E6BFF" },
+    "apresentadora": { "nome": "Ana", "cor": "#05A0FF" },
     "colega": { "nome": "Rafa", "cor": "#D99A00" }
   },
   "som": { "musica": "trilha-otimista", "volumeMusica": 0.3 },

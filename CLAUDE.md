@@ -84,9 +84,14 @@ molde: invente composições novas. Vocabulário de movimento e ideias de cena: 
 - `"fundo": "escuro"` troca o logo para a versão clara. Transições: `folha`, `deslizar`, `zoom`, `circulo` (com `"origem": [x, y]`), `corte`.
 - Trilhas: `trilha-otimista`, `trilha-calma` (ou um arquivo seu em `musica/`), ou `"musica": null`.
 
-## A marca da empresa (nunca no repositório público)
-Copie `marca/padrao/` para `marca/local/<empresa>/` (essa pasta é ignorada pelo git), troque as cores do `marca.json` e os
-dois logos (SVG/PNG: um para fundo claro, outro para fundo escuro) e use `"marca": "local/<empresa>"` no video.json.
+## A marca
+- **`"marca": "porto"`** — a marca da Porto, já pronta: ciano `#05A0FF` (primária), real `#2B55C2` (secundária), marinho
+  `#03227A` (escura), lavanda `#C1CBED` (clara), amarelo `#FFC93C` (destaque) e os logos azul e branco do site oficial.
+  É o visual dos vídeos de treinamento da Porto (o exemplo `videos/exemplo-reforma` usa).
+  Fundos que funcionam: ciano (`.fundo.primaria`), marinho (`.fundo.escura`), lavanda (`.fundo.clara`) e o claro (`.fundo`).
+- `"marca": "padrao"` — uma marca neutra de exemplo.
+- Outra marca: copie `marca/padrao/` para `marca/<nome>/` (ou `marca/local/<nome>/`, que o git ignora), troque as cores e os
+  dois logos (um para fundo claro, outro para fundo escuro) e use `"marca": "<nome>"`.
 
 ## Arquivos
 - `docs/api.md` — todas as funções das cenas (leia antes da 1ª cena) · `docs/estilo.md` — o visual, o movimento, ideias de cena
